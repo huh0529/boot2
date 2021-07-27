@@ -5,9 +5,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sb.domain.posts.Posts;
 import sb.domain.posts.PostsRepository;
+import sb.web.dto.PostsListResponseDto;
 import sb.web.dto.PostsResponseDto;
 import sb.web.dto.PostsSaveRequestDto;
 import sb.web.dto.PostsUpdateRequestDto;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -34,5 +38,12 @@ public class PostsService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
 
         return new PostsResponseDto(entity);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostsListResponseDto> findAllDesc() {
+        return postsRepository.findAllDesc().stream()
+                .map(PostsListResponseDto::new)
+                .collect(Collectors.toList());
     }
 }
